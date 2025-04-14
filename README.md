@@ -5,16 +5,10 @@
    ```bash
    pnpm install
    ```
-3. 環境変数を設定する：
-   - サンプルの環境ファイルをコピー：
-     ```bash
-     cp .env/sample.env .env/.env
-     ```
-   - `.env/.env` を開いて、Box の JWT 認証情報を入力する
 
 ## 認証設定
 
-1. [Box Developer Console](https://developer.box.com/) で JWT 認証方式の Box アプリケーションを作成
+1. [Box Developer Console](https://kanmu.app.box.com/developers/console) で JWT 認証方式の Box アプリケーションを作成
 2. JWT 設定の JSON をダウンロード
 3. JWT 設定を base64 でエンコード：
    ```bash

@@ -1,0 +1,30 @@
+{
+  "name": "kanmu-box-mcp-server",
+  "version": "0.0.1",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "kanmu-esa-mcp-server": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "esbuild ./src/index.ts --bundle --platform=node --packages=external --format=esm --outdir=dist --sourcemap"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "box-typescript-sdk-gen": "^1.15.1",
+    "pdfjs-dist": "^5.1.91",
+    "yaml": "^2.7.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.30",
+    "esbuild": "^0.25.2",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

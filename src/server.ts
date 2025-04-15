@@ -19,10 +19,12 @@ export const createServer = () => {
   ).toString("utf-8");
   const jwtConfig = JwtConfig.fromConfigJsonString(decodeJwt);
   const jwtAuth = new BoxJwtAuth({ config: jwtConfig });
-  const userAuth = jwtAuth.withUserSubject(getRequiredEnv("BOX_USER_ID"));
+  const enterpriseAuth = jwtAuth.withEnterpriseSubject(
+    getRequiredEnv("BOX_ENTERPRISE_ID")
+  );
 
   const client = new BoxClient({
-    auth: userAuth,
+    auth: enterpriseAuth,
   });
 
   // Search files in Box

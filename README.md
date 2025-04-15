@@ -31,7 +31,8 @@ pnpm build
       "args": ["/path/to/box-mcp/dist/index.js"], // 現在はローカルビルド前提
       "env": {
         "BOX_JWT_BASE64": "YOUR_BASE64_ENCODED_JWT_CONFIG",
-        "BOX_USER_ID": "YOUR_BOX_USER_ID"
+        "BOX_ENTERPRISE_ID": "YOUR_BOX_ENTERPRISE_ID",
+        "NODE_EXTRA_CA_CERTS": "" // https://kanmu.esa.io/posts/24244のNodeを参照して下さい
       }
     }
   }

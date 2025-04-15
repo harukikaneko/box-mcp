@@ -36,12 +36,25 @@ export const formatTool = async (
 ): Promise<CallToolResult> => {
   try {
     const result = await cb();
+    const responseData = toResponse(result);
+    
+    // JSONデータの場合はそのままJSON形式で返す
+    if (typeof responseData === 'object' && responseData !== null && 'type' in responseData && responseData.type === 'error') {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(responseData, null, 2),
+          },
+        ],
+      };
+    }
 
     return {
       content: [
         {
           type: "text",
-          text: stringify(toResponse(result)),
+          text: stringify(responseData),
         },
       ],
     };

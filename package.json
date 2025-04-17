@@ -7,15 +7,17 @@
     "kanmu-esa-mcp-server": "./dist/index.js"
   },
   "scripts": {
-    "build": "esbuild ./src/index.ts --bundle --platform=node --packages=external --format=esm --outdir=dist --sourcemap"
+    "build": "esbuild ./src/index.ts --bundle --platform=node --packages=external --format=esm --outdir=dist --sourcemap && cp src/convert.py dist/"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.9.0",
+    "@types/tmp": "^0.2.6",
     "box-typescript-sdk-gen": "^1.15.1",
     "pdfjs-dist": "^5.1.91",
+    "tmp": "^0.2.3",
     "yaml": "^2.7.1",
     "zod": "^3.24.2"
   },

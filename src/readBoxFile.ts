@@ -1,19 +1,25 @@
+import { execFile } from "child_process";
+import * as fs from "fs";
+import * as path from "path";
+import * as tmp from "tmp";
 import { BoxClient } from "box-typescript-sdk-gen";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import { fileURLToPath } from "url";
+import { getRequiredEnv } from "./env";
 
-export async function readBoxFile(client: BoxClient, fileId: string) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export async function readBoxFile(
+  client: BoxClient,
+  fileId: string
+): Promise<string> {
   const fileInfo = await client.files.getFileById(fileId);
   const fileType = fileInfo.name?.split(".").pop()?.toLowerCase();
 
-  if (!fileType) {
-    throw new Error("Failed to determine file type");
-  }
+  if (!fileType) throw new Error("Failed to determine file type");
 
   const fileContentStream = await client.downloads.downloadFile(fileId);
-
-  if (!fileContentStream) {
-    throw new Error("Failed to download file content");
-  }
+  if (!fileContentStream) throw new Error("Failed to download file content");
 
   const fileContent = await new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -22,45 +28,45 @@ export async function readBoxFile(client: BoxClient, fileId: string) {
     fileContentStream.on("error", reject);
   });
 
-  let textContent: string;
+  // 対応拡張子リスト（MarkItDown対応形式）
+  const handledByPython = ["pdf", "docx", "pptx", "xlsx"];
 
-  // Process based on file type
+  if (handledByPython.includes(fileType)) {
+    // 一時ファイルに保存
+    const tmpFile = tmp.fileSync({ postfix: `.${fileType}` });
+    fs.writeFileSync(tmpFile.name, fileContent);
+
+    return new Promise<string>((resolve, reject) => {
+      const pythonPath = path.join(__dirname, "convert.py");
+
+      execFile(
+        getRequiredEnv("PYTHON_EXE"),
+        [pythonPath, tmpFile.name],
+        (
+          error: { message: any },
+          stdout: string | PromiseLike<string>,
+          stderr: any
+        ) => {
+          tmpFile.removeCallback();
+
+          if (error) {
+            reject(`Python Error: ${stderr || error.message}`);
+          } else {
+            resolve(stdout);
+          }
+        }
+      );
+    });
+  }
+
+  // fallback: テキスト形式ならそのまま読む
   switch (fileType) {
-    case "pdf":
-      const loadingTask = pdfjsLib.getDocument({
-        data: new Uint8Array(fileContent.buffer),
-        useSystemFonts: true,
-        verbosity: 0,
-      });
-
-      const pdfDocument = await loadingTask.promise;
-
-      // Extract text from all pages
-      let extractedPages: string[] = [];
-      for (let i = 1; i <= pdfDocument.numPages; i++) {
-        const page = await pdfDocument.getPage(i);
-        const content = await page.getTextContent();
-        const pageText = content.items
-          .map((item) => ("str" in item ? item.str : ""))
-          .join(" ");
-        extractedPages.push(pageText);
-      }
-
-      textContent = extractedPages.join("\n\n");
-      break;
-
-    case "doc":
-    case "docx":
     case "txt":
     case "md":
     case "json":
     case "csv":
-      textContent = fileContent.toString();
-      break;
-
+      return fileContent.toString();
     default:
       throw new Error(`Unsupported file type: ${fileType}`);
   }
-
-  return textContent;
 }

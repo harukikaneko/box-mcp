@@ -1,10 +1,10 @@
 {
-  "name": "kanmu-box-mcp-server",
+  "name": "box-mcp-server",
   "version": "0.0.1",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "kanmu-esa-mcp-server": "./dist/index.js"
+    "box-mcp-server": "./dist/index.js"
   },
   "scripts": {
     "build": "esbuild ./src/index.ts --bundle --platform=node --packages=external --format=esm --outdir=dist --sourcemap && cp src/convert.py dist/"

@@ -9,7 +9,7 @@
 
 ## 認証設定
 
-1. [Box Developer Console](https://kanmu.app.box.com/developers/console) で JWT 認証方式の Box アプリケーションを作成
+1. Box Developer Console で JWT 認証方式の Box アプリケーションを作成
 2. JWT 設定の JSON をダウンロード
 3. JWT 設定を base64 でエンコード：
    ```bash

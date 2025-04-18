@@ -33,7 +33,7 @@ pnpm build
       "env": {
         "BOX_JWT_BASE64": "YOUR_BASE64_ENCODED_JWT_CONFIG",
         "BOX_ENTERPRISE_ID": "YOUR_BOX_ENTERPRISE_ID",
-        "NODE_EXTRA_CA_CERTS": "", // https://kanmu.esa.io/posts/24244のNodeを参照して下さい
+        "NODE_EXTRA_CA_CERTS": "",
         "PYTHON_EXE": "" // 自身のpython3のpath
       }
     }
